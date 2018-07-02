@@ -68,7 +68,7 @@ class grid:
         pygame.init()
         self.screen = pygame.display.set_mode(self.size)
         self.clock = pygame.time.Clock()
-    
+
     def animate(self, function, time = 1, framerate = 30, radius = 1):
         numFrames = time * framerate
         for p in self.points:
@@ -97,11 +97,10 @@ class grid:
         #pygame.display.quit()
         #pygame.quit()
 
-
-
-
 def function(p):
-    return p * complex(0,1)
+    return p * p
 
-g = grid((60,30),20,complex)
-g.animate(function, time = 10, framerate = 60, radius = 3)
+g = grid((11,11),20,complex)
+
+
+g.animate(function, time = 3, framerate = 60, radius = 3)
