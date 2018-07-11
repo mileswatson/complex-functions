@@ -11,15 +11,24 @@ class complex:
             return complex(self.r + other, self.i)
         return complex(self.r + other.r, self.i + other.i)
     
+    def __radd__(self, other):
+        return complex(self.r + other, self.i)
+    
     def __sub__(self, other):
         if type(other) != complex:
             return complex(self.r - other, self.i)
         return complex(self.r - other.r, self.i - other.i)
     
+    def __rsub__(self, other):
+        return complex(other - self.r, self.i)
+    
     def __mul__(self, other):
         if type(other) != complex:
             return complex(self.r * other, self.i * other)
         return complex(self.r * other.r - self.i * other.i, (self.r * other.i) + (self.i * other.r))
+
+    def __rmul__(self, other):
+        return complex(self.r * other, self.i * other)
 
     def __truediv__(self, other):
         if type(other) != complex:
@@ -32,11 +41,53 @@ class complex:
             div = 0.000001
         return complex(x.r/div, x.i/div)
     
+    def __rtruediv__(self, other):
+        return complex(other, 0) / self
+    
+    def __abs__(self):
+        return complex((self.r**2 + self.i**2)**0.5,0)
+    
     def __str__(self):
         if self.i < 0:
             return "(" +str(self.r)+str(self.i)+"i)"
         else:
             return "(" +str(self.r)+"+"+str(self.i)+"i)"
+    
+    def __int__(self):
+        return int(self.r)
+    
+    def __float__(self):
+        return float(self.r)
+    
+    def __lt__(self, other):
+        if type(other) != complex:
+            return (self.r**2 + self.i**2)**0.5 < other
+        return (self.r**2 + self.i**2)**0.5 < (other.r**2 + other.i**2)**0.5
+    
+    def __le__(self, other):
+        if type(other) != complex:
+            return (self.r**2 + self.i**2)**0.5 <= other
+        return (self.r**2 + self.i**2)**0.5 <= (other.r**2 + other.i**2)**0.5
+    
+    def __eq__(self, other):
+        if type(other) != complex:
+            other = complex(other, 0)
+        return self.r == other.r and self.i == other.i
+    
+    def __ne__(self, other):
+        if type(other) != complex:
+            other = complex(other, 0)
+        return self.r != other.r or self.i != other.i
+    
+    def __ge__(self, other):
+        if type(other) != complex:
+            return (self.r**2 + self.i**2)**0.5 >= other
+        return (self.r**2 + self.i**2)**0.5 >= (other.r**2 + other.i**2)**0.5
+    
+    def __gt__(self, other):
+        if type(other) != complex:
+            return (self.r**2 + self.i**2)**0.5 < other
+        return (self.r**2 + self.i**2)**0.5 < (other.r**2 + other.i**2)**0.5
     
     def get(self):
         return (self.r, self.i)
@@ -75,10 +126,15 @@ class grid:
 
     def animate(self, function, time = 1, framerate = 30, radius = 1):
         numFrames = time * framerate
+        done = False
         for p in self.points:
             p.apply(function, numFrames)
-        for f in range(numFrames):
+        f = 0
+        while f < numFrames and not done:
             self.screen.fill((0,0,0))
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True
             pygame.draw.line(self.screen,(128,128,128),(0,self.centre[1]),(self.size[0],self.centre[1]))
             pygame.draw.line(self.screen,(128,128,128),(self.centre[0],0),(self.centre[0],self.size[1]))
             for p in self.points:
@@ -92,12 +148,15 @@ class grid:
                 if event.type == pygame.QUIT:
                     break
             #print(f)
-        done = False
+            f += 1
         while not done:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
             self.clock.tick(30)
+        
+    def __repr__(self):
+        return "complex({self.r}, {self.i})"
 
     def addSquare(self, radius):
         i = -radius
@@ -108,10 +167,13 @@ class grid:
             self.points.append(point(complex(i, -radius)))
             i += 0.2
 
-def y(x):
-    return complex(x.i, x.r) / x
+def f(z):
+    if z < 5:
+        return z**0.5
+    else:
+        return z * 2
 
-g = grid((25,25),25,complex)
+g = grid((13,13),50,complex)
 
 g.points = []
 for i in range(6):
@@ -119,4 +181,4 @@ for i in range(6):
 
 
 
-g.animate(y, time = 5, framerate = 30, radius = 0.5)
+g.animate(f, time = 1, framerate = 30, radius = 0.5)
