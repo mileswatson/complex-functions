@@ -5,15 +5,15 @@ class complex:
     def __init__(self, r, i):
         self.r = r
         self.i = i
-
+        
     def __add__(self, other):
         if type(other) != complex:
-            return complex(self.r + other, self.i + other)
+            return complex(self.r + other, self.i)
         return complex(self.r + other.r, self.i + other.i)
     
     def __sub__(self, other):
         if type(other) != complex:
-            return complex(self.r - other, self.i - other)
+            return complex(self.r - other, self.i)
         return complex(self.r - other.r, self.i - other.i)
     
     def __mul__(self, other):
@@ -23,9 +23,13 @@ class complex:
 
     def __truediv__(self, other):
         if type(other) != complex:
+            if other == 0:
+                other = 0.000001
             return complex(self.r / other, self.i / other)
         x = self * complex(other.r,-other.i)
         div = (other.r * other.r) + (other.i * other.i)
+        if div == 0:
+            div = 0.000001
         return complex(x.r/div, x.i/div)
     
     def __str__(self):
@@ -94,13 +98,25 @@ class grid:
                 if event.type == pygame.QUIT:
                     done = True
             self.clock.tick(30)
-        #pygame.display.quit()
-        #pygame.quit()
 
-def function(p):
-    return p * p
+    def addSquare(self, radius):
+        i = -radius
+        while i < radius + 0.1:
+            self.points.append(point(complex(radius, i)))
+            self.points.append(point(complex(-radius, i)))
+            self.points.append(point(complex(i, radius)))
+            self.points.append(point(complex(i, -radius)))
+            i += 0.2
 
-g = grid((11,11),20,complex)
+def y(x):
+    return complex(x.i, x.r) / x
+
+g = grid((25,25),25,complex)
+
+g.points = []
+for i in range(6):
+    g.addSquare(i)
 
 
-g.animate(function, time = 3, framerate = 60, radius = 3)
+
+g.animate(y, time = 5, framerate = 30, radius = 0.5)
