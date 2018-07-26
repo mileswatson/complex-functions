@@ -104,6 +104,8 @@ class point:
     
     def apply(self, function, numFrames):
         self.range = function(self.domain)
+        if type(self.range) != complex:
+            self.range = complex(self.range, 0)
         self.interval = (self.range - self.domain) / numFrames
     
     def move(self):
@@ -167,18 +169,16 @@ class grid:
             self.points.append(point(complex(i, -radius)))
             i += 0.2
 
-def f(z):
-    if z < 5:
-        return z**0.5
-    else:
-        return z * 2
-
 g = grid((13,13),50,complex)
 
 g.points = []
-for i in range(6):
+for i in range(3):
     g.addSquare(i)
 
+i = complex(0,1)
 
 
-g.animate(f, time = 1, framerate = 30, radius = 0.5)
+
+f = lambda z: z / z.r * z.i
+
+g.animate(f, time = 1, framerate = 30, radius = 1)
