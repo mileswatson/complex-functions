@@ -172,13 +172,14 @@ class grid:
 g = grid((13,13),50,complex)
 
 g.points = []
-for i in range(3):
+for i in range(5):
     g.addSquare(i)
 
 i = complex(0,1)
 
 
 
-f = lambda z: z / z.r * z.i
+def f(z):
+    return z / complex(z.i, z.r)
 
-g.animate(f, time = 1, framerate = 30, radius = 1)
+g.animate(f, time = 5, framerate = 30, radius = 1)
