@@ -1,4 +1,5 @@
 import pygame
+import sys
 
 class complex:
 
@@ -143,7 +144,8 @@ class grid:
                 p.move()
                 pos = p.domain.get()
                 pos = (round(pos[0]*self.scale)+self.centre[0],self.centre[1]-round(pos[1]*self.scale))
-                pygame.draw.circle(self.screen,(75, 150, 255),pos,2)
+                if max(pos) < 2147483647 and min(pos) > -2147483647:
+                    pygame.draw.circle(self.screen,(75, 150, 255),pos,2)
             pygame.display.flip()
             self.clock.tick(framerate)
             for event in pygame.event.get():
@@ -162,12 +164,13 @@ class grid:
 
     def addSquare(self, radius):
         i = -radius
-        while i < radius + 0.1:
+        res = 0.1
+        while i <= radius + (res/2):
             self.points.append(point(complex(radius, i)))
             self.points.append(point(complex(-radius, i)))
             self.points.append(point(complex(i, radius)))
             self.points.append(point(complex(i, -radius)))
-            i += 0.2
+            i += res
 
 g = grid((13,13),50,complex)
 
@@ -180,6 +183,6 @@ i = complex(0,1)
 
 
 def f(z):
-    return z / complex(z.i, z.r)
+    return eval(sys.argv[1])
 
 g.animate(f, time = 5, framerate = 30, radius = 1)
