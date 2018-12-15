@@ -87,8 +87,8 @@ class complex:
     
     def __gt__(self, other):
         if type(other) != complex:
-            return (self.r**2 + self.i**2)**0.5 < other
-        return (self.r**2 + self.i**2)**0.5 < (other.r**2 + other.i**2)**0.5
+            return (self.r**2 + self.i**2)**0.5 > other
+        return (self.r**2 + self.i**2)**0.5 > (other.r**2 + other.i**2)**0.5
     
     def get(self):
         return (self.r, self.i)
